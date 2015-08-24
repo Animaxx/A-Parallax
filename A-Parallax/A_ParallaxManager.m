@@ -9,9 +9,16 @@
 #import "A_ParallaxManager.h"
 #import <CoreMotion/CoreMotion.h>
 
+#define displacementRange 0.5f
+#define yAxleOffset 0.15f
+#define updateInterval 0.1f
+
 @implementation A_ParallaxManager {
     CMMotionManager *_motionManager;
     NSMutableArray *_subviews;
+    
+    CGPoint _originalPoint;
+    CADisplayLink *_displayLink;
 }
 
 + (A_ParallaxManager *)shareInstance {
@@ -36,21 +43,40 @@
     if (self) {
         _subviews = [[NSMutableArray alloc] init];
         _motionManager = [[CMMotionManager alloc] init];
-        _motionManager.gyroUpdateInterval = 0.2f;
-        if (_motionManager.gyroAvailable) {
-            [_motionManager startAccelerometerUpdatesToQueue:[NSOperationQueue mainQueue] withHandler:^(CMAccelerometerData *accelerometerData, NSError *error) {
-                if (_subviews.count > 0) {
-                    double rotation = atan2(accelerometerData.acceleration.x, accelerometerData.acceleration.y) - M_PI;
-                    ((UIView *)_subviews[0]).transform = CGAffineTransformMakeRotation(rotation);
-                }
+        
+        
+        if (_motionManager.deviceMotionAvailable) {
+            _displayLink  = [CADisplayLink displayLinkWithTarget:self selector:@selector(displayLinkHandler)];
+            
+            _motionManager.deviceMotionUpdateInterval = updateInterval;
+            [_motionManager startDeviceMotionUpdatesToQueue:[NSOperationQueue mainQueue] withHandler:^(CMDeviceMotion *data, NSError *error) {
+                                                    
+                NSLog(@"x:%f y:%f z:%f", data.gravity.x, data.gravity.y, data.gravity.z);
+                CGPoint newPoint = CGPointMake(_originalPoint.x + (_originalPoint.x * data.gravity.x * displacementRange) ,
+                                               _originalPoint.y + _originalPoint.y * yAxleOffset + (_originalPoint.y * data.gravity.y * displacementRange)  );
+                
+                NSLog(@"new x:%f new y:%f", newPoint.x, newPoint.y);
+                
+                //TODO: update to use display link
+                [UIView animateWithDuration:updateInterval animations:^{
+                    [((UIView *)_subviews[0]) setCenter: newPoint];
+                } completion:^(BOOL finished) {
+                    
+                }];
+                
             }];
-        } else {
-            NSLog(@"========= Error: =========\r\nDevice doen't support motion service. \r\n==========================");
         }
+        
     }
     return self;
 }
+- (void)displayLinkHandler {
+    
+}
+
+
 - (void)A_AddView:(UIView*)view {
+    _originalPoint = view.center;
     [_subviews addObject:view];
 }
 

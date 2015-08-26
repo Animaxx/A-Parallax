@@ -9,10 +9,6 @@
 #import "A_ParallaxManager.h"
 #import <CoreMotion/CoreMotion.h>
 
-#define displacementRange 0.5f
-#define yAxleOffset 0.15f
-#define updateInterval 0.1f
-
 @implementation A_ParallaxManager {
     CMMotionManager *_motionManager;
     NSMutableArray *_subviews;
@@ -48,17 +44,20 @@
         if (_motionManager.deviceMotionAvailable) {
             _displayLink  = [CADisplayLink displayLinkWithTarget:self selector:@selector(displayLinkHandler)];
             
-            _motionManager.deviceMotionUpdateInterval = updateInterval;
+            _motionManager.deviceMotionUpdateInterval = A_Parallax_updateInterval;
+//            [_motionManager startDeviceMotionUpdates];
+//            _motionManager.deviceMotion.gravity
+            
             [_motionManager startDeviceMotionUpdatesToQueue:[NSOperationQueue mainQueue] withHandler:^(CMDeviceMotion *data, NSError *error) {
                                                     
                 NSLog(@"x:%f y:%f z:%f", data.gravity.x, data.gravity.y, data.gravity.z);
-                CGPoint newPoint = CGPointMake(_originalPoint.x + (_originalPoint.x * data.gravity.x * displacementRange) ,
-                                               _originalPoint.y + _originalPoint.y * yAxleOffset + (_originalPoint.y * data.gravity.y * displacementRange)  );
+                CGPoint newPoint = CGPointMake(_originalPoint.x + (_originalPoint.x * data.gravity.x * A_Parallax_displacementRange) ,
+                                               _originalPoint.y + _originalPoint.y * A_Parallax_yAxleOffset + (_originalPoint.y * data.gravity.y * A_Parallax_displacementRange)  );
                 
                 NSLog(@"new x:%f new y:%f", newPoint.x, newPoint.y);
                 
                 //TODO: update to use display link
-                [UIView animateWithDuration:updateInterval animations:^{
+                [UIView animateWithDuration:A_Parallax_updateInterval animations:^{
                     [((UIView *)_subviews[0]) setCenter: newPoint];
                 } completion:^(BOOL finished) {
                     
@@ -75,7 +74,8 @@
 }
 
 
-- (void)A_AddView:(UIView*)view {
+- (void)A_AddView:(UIView*)view distance:(CGFloat)distance {
+    //TODO:
     _originalPoint = view.center;
     [_subviews addObject:view];
 }

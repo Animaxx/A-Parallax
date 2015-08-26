@@ -28,7 +28,7 @@
     _backgroupView = [[UIImageView alloc] initWithImage:backgroupImage];
     
     [self.view insertSubview:_backgroupView atIndex:0];
-    [[A_ParallaxManager shareInstance] A_AddView:_backgroupView];
+    [[A_ParallaxManager shareInstance] A_AddView:_backgroupView distance:1.0f];
 }
 
 @end

@@ -7,9 +7,15 @@
 //
 
 #import "UIViewController+A_Parallax.h"
+#import "A_ParallaxManager.h"
 
 @implementation UIViewController (A_Parallax)
 
-
+- (void)setBackgroupImage: (UIImage *)image {
+    UIImage *backgroupImage = [A_ParallaxManager adjustImage:image toSize:[UIScreen mainScreen].bounds.size];
+    //TODO: size
+    [self.view insertSubview:[[UIImageView alloc] initWithImage:backgroupImage] atIndex:0];
+    
+}
 
 @end

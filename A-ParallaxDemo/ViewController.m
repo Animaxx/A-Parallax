@@ -8,6 +8,7 @@
 
 #import "ViewController.h"
 #import "A_ParallaxManager.h"
+#import "UIViewController+A_Parallax.h"
 
 @interface ViewController ()
 
@@ -24,11 +25,13 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    UIImage *backgroupImage = [A_ParallaxManager adjustImage:[UIImage imageNamed:@"backgroup"] toSize:[UIScreen mainScreen].bounds.size];
-    _backgroupView = [[UIImageView alloc] initWithImage:backgroupImage];
+//    UIImage *backgroupImage = [A_ParallaxManager adjustImage:[UIImage imageNamed:@"backgroup"] toSize:[UIScreen mainScreen].bounds.size];
+//    _backgroupView = [[UIImageView alloc] initWithImage:backgroupImage];
+//    
+//    [self.view insertSubview:_backgroupView atIndex:0];
+//    [[A_ParallaxManager shareInstance] A_AddView:_backgroupView distance:1.0f];
     
-    [self.view insertSubview:_backgroupView atIndex:0];
-    [[A_ParallaxManager shareInstance] A_AddView:_backgroupView distance:1.0f];
+    [self A_SetBackgroupImage:[UIImage imageNamed:@"backgroup"]];
 }
 
 @end

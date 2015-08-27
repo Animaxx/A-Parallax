@@ -9,10 +9,26 @@
 #import "A_ParallaxManager.h"
 #import <CoreMotion/CoreMotion.h>
 
+#pragma mark - Parallax View Model
+@interface A_ParallaxViewModel : NSObject
+
+@property (nonatomic) CGFloat depth;
+@property (weak, nonatomic) UIView *view;
+@property (nonatomic) CGPoint centerPoint;
+
+@end
+
+@implementation A_ParallaxViewModel
+
+@end
+
+
+#pragma mark - Parallax Manager
 @implementation A_ParallaxManager {
     CMMotionManager *_motionManager;
-    NSMutableArray *_subviews;
+    NSMutableArray *_subviewModels;
     
+    // TODO: DELETE
     CGPoint _originalPoint;
     CADisplayLink *_displayLink;
 }
@@ -37,19 +53,21 @@
 - (instancetype)initManager {
     self = [super init];
     if (self) {
-        _subviews = [[NSMutableArray alloc] init];
+        _subviewModels = [[NSMutableArray alloc] init];
         _motionManager = [[CMMotionManager alloc] init];
         
         
         if (_motionManager.deviceMotionAvailable) {
             _displayLink  = [CADisplayLink displayLinkWithTarget:self selector:@selector(displayLinkHandler)];
+            _displayLink.frameInterval = 1;
             
             _motionManager.deviceMotionUpdateInterval = A_Parallax_updateInterval;
 //            [_motionManager startDeviceMotionUpdates];
-//            _motionManager.deviceMotion.gravity
-            
             [_motionManager startDeviceMotionUpdatesToQueue:[NSOperationQueue mainQueue] withHandler:^(CMDeviceMotion *data, NSError *error) {
-                                                    
+                
+                if (_subviewModels.count <= 0) return;
+                
+                
                 NSLog(@"x:%f y:%f z:%f", data.gravity.x, data.gravity.y, data.gravity.z);
                 CGPoint newPoint = CGPointMake(_originalPoint.x + (_originalPoint.x * data.gravity.x * A_Parallax_displacementRange) ,
                                                _originalPoint.y + _originalPoint.y * A_Parallax_yAxleOffset + (_originalPoint.y * data.gravity.y * A_Parallax_displacementRange)  );
@@ -58,11 +76,10 @@
                 
                 //TODO: update to use display link
                 [UIView animateWithDuration:A_Parallax_updateInterval animations:^{
-                    [((UIView *)_subviews[0]) setCenter: newPoint];
+                    [((A_ParallaxViewModel*)_subviewModels[0]).view setCenter:newPoint];
                 } completion:^(BOOL finished) {
                     
                 }];
-                
             }];
         }
         
@@ -73,15 +90,31 @@
     
 }
 
-
-- (void)A_AddView:(UIView*)view distance:(CGFloat)distance {
-    //TODO:
+- (void)A_AddView:(UIView*)view depth:(CGFloat)depth {
     _originalPoint = view.center;
-    [_subviews addObject:view];
+    
+    A_ParallaxViewModel *model = [self storeModel:view];
+    model.depth = depth;
 }
 
 
-#pragma helping methods
+- (A_ParallaxViewModel *)storeModel:(UIView *)view {
+    for (A_ParallaxViewModel *model in _subviewModels) {
+        if (model.view == view) {
+            return model;
+        }
+    }
+    
+    A_ParallaxViewModel *model = [[A_ParallaxViewModel alloc] init];
+    model.view = view;
+    [_subviewModels addObject:model];
+    return model;
+}
+
+#pragma mark - Helping methods
+//- (void)
+
+
 - (CGFloat)degreesToRadians:(CGFloat) degrees {
     return degrees * M_PI / 180;
 };
@@ -128,3 +161,8 @@
 }
 
 @end
+
+
+
+
+

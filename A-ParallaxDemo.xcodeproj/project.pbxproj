@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6939F4211B8E899B00CBCC8C /* UIView+A_Parallax.m in Sources */ = {isa = PBXBuildFile; fileRef = 6939F4201B8E899B00CBCC8C /* UIView+A_Parallax.m */; };
 		695E92B61B86CA5C00C7D40B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 695E92B51B86CA5C00C7D40B /* main.m */; };
 		695E92B91B86CA5C00C7D40B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 695E92B81B86CA5C00C7D40B /* AppDelegate.m */; };
 		695E92BC1B86CA5C00C7D40B /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 695E92BB1B86CA5C00C7D40B /* ViewController.m */; };
@@ -18,6 +19,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6939F41F1B8E899B00CBCC8C /* UIView+A_Parallax.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+A_Parallax.h"; sourceTree = "<group>"; };
+		6939F4201B8E899B00CBCC8C /* UIView+A_Parallax.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+A_Parallax.m"; sourceTree = "<group>"; };
 		695E92B01B86CA5C00C7D40B /* A-ParallaxDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "A-ParallaxDemo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		695E92B41B86CA5C00C7D40B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		695E92B51B86CA5C00C7D40B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -93,6 +96,8 @@
 				695E92DB1B86D09300C7D40B /* A_ParallaxManager.m */,
 				695E92DC1B86D09300C7D40B /* UIViewController+A_Parallax.h */,
 				695E92DD1B86D09300C7D40B /* UIViewController+A_Parallax.m */,
+				6939F41F1B8E899B00CBCC8C /* UIView+A_Parallax.h */,
+				6939F4201B8E899B00CBCC8C /* UIView+A_Parallax.m */,
 			);
 			path = "A-Parallax";
 			sourceTree = "<group>";
@@ -171,6 +176,7 @@
 				695E92DF1B86D09300C7D40B /* UIViewController+A_Parallax.m in Sources */,
 				695E92BC1B86CA5C00C7D40B /* ViewController.m in Sources */,
 				695E92B91B86CA5C00C7D40B /* AppDelegate.m in Sources */,
+				6939F4211B8E899B00CBCC8C /* UIView+A_Parallax.m in Sources */,
 				695E92DE1B86D09300C7D40B /* A_ParallaxManager.m in Sources */,
 				695E92B61B86CA5C00C7D40B /* main.m in Sources */,
 			);

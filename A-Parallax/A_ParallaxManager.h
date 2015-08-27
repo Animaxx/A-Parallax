@@ -12,13 +12,13 @@
 #define A_Parallax_yAxleOffset 0.15f
 #define A_Parallax_updateInterval 0.1f
 
+
 @interface A_ParallaxManager : NSObject
 
 + (A_ParallaxManager *)shareInstance;
-- (void)A_AddView:(UIView*)view distance:(CGFloat)distance;
 
-#pragma mark -
-+ (UIImage *)adjustImage:(UIImage *)image toSize:(CGSize)size;
+// depth is about how depth the view should be, range  [0...1]
+- (void)A_AddView:(UIView*)view depth:(CGFloat)depth;
 
 
 @end

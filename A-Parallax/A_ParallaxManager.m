@@ -58,43 +58,53 @@
         
         
         if (_motionManager.deviceMotionAvailable) {
+            _motionManager.deviceMotionUpdateInterval = A_Parallax_updateInterval;
+            [_motionManager startDeviceMotionUpdates];
+            
             _displayLink  = [CADisplayLink displayLinkWithTarget:self selector:@selector(displayLinkHandler)];
             _displayLink.frameInterval = 1;
             
-            _motionManager.deviceMotionUpdateInterval = A_Parallax_updateInterval;
-//            [_motionManager startDeviceMotionUpdates];
-            [_motionManager startDeviceMotionUpdatesToQueue:[NSOperationQueue mainQueue] withHandler:^(CMDeviceMotion *data, NSError *error) {
-                
-                if (_subviewModels.count <= 0) return;
-                
-                
-                NSLog(@"x:%f y:%f z:%f", data.gravity.x, data.gravity.y, data.gravity.z);
-                CGPoint newPoint = CGPointMake(_originalPoint.x + (_originalPoint.x * data.gravity.x * A_Parallax_displacementRange) ,
-                                               _originalPoint.y + _originalPoint.y * A_Parallax_yAxleOffset + (_originalPoint.y * data.gravity.y * A_Parallax_displacementRange)  );
-                
-                NSLog(@"new x:%f new y:%f", newPoint.x, newPoint.y);
-                
-                //TODO: update to use display link
-                [UIView animateWithDuration:A_Parallax_updateInterval animations:^{
-                    [((A_ParallaxViewModel*)_subviewModels[0]).view setCenter:newPoint];
-                } completion:^(BOOL finished) {
-                    
-                }];
-            }];
+            [_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+            
+//            [_motionManager startDeviceMotionUpdatesToQueue:[NSOperationQueue mainQueue] withHandler:^(CMDeviceMotion *data, NSError *error) {
+//                
+//                if (_subviewModels.count <= 0) return;
+//                
+//                
+//                NSLog(@"x:%f y:%f z:%f", data.gravity.x, data.gravity.y, data.gravity.z);
+            // TODO: Backgroup needs add "A_Parallax_yAxleOffset"
+//                CGPoint newPoint = CGPointMake(_originalPoint.x + (_originalPoint.x * data.gravity.x * A_Parallax_displacementRange) ,
+//                                               _originalPoint.y + _originalPoint.y * A_Parallax_yAxleOffset + (_originalPoint.y * data.gravity.y * A_Parallax_displacementRange)  );
+//                
+//                NSLog(@"new x:%f new y:%f", newPoint.x, newPoint.y);
+//                
+//                //TODO: update to use display link
+//                [UIView animateWithDuration:A_Parallax_updateInterval animations:^{
+//                    [((A_ParallaxViewModel*)_subviewModels[0]).view setCenter:newPoint];
+//                } completion:^(BOOL finished) {
+//                    
+//                }];
+//            }];
         }
         
     }
     return self;
 }
 - (void)displayLinkHandler {
-    
+    NSLog(@"x:%f y:%f z:%f", _motionManager.deviceMotion.gravity.x, _motionManager.deviceMotion.gravity.y, _motionManager.deviceMotion.gravity.z);
 }
 
 - (void)A_AddView:(UIView*)view depth:(CGFloat)depth {
     _originalPoint = view.center;
     
     A_ParallaxViewModel *model = [self storeModel:view];
-    model.depth = depth;
+    if (depth < 0.0f) {
+        model.depth = 0.0f;
+    } else if (depth > 1.0f) {
+        model.depth = 1.0f;
+    } else {
+        model.depth = depth;
+    }
 }
 
 
@@ -112,8 +122,11 @@
 }
 
 #pragma mark - Helping methods
-//- (void)
-
+- (CGPoint)calculatePoint:(A_ParallaxViewModel *)viewModel accleration:(CMDeviceMotion *)data {
+    CGPoint newPoint = CGPointMake(_originalPoint.x + ((_originalPoint.x * data.gravity.x * A_Parallax_displacementRange) * viewModel.depth),
+                                   _originalPoint.y + ((_originalPoint.y * data.gravity.y * A_Parallax_displacementRange) * viewModel.depth));
+    return newPoint;
+}
 
 - (CGFloat)degreesToRadians:(CGFloat) degrees {
     return degrees * M_PI / 180;

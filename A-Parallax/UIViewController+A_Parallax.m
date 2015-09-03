@@ -30,7 +30,7 @@
     backgroupView.frame = viewFrame;
     
     [self.view insertSubview:backgroupView atIndex:0];
-    [[A_ParallaxManager shareInstance] A_AddView:backgroupView depth:1.0f];
+    [[A_ParallaxManager shareInstance] A_StoreBackgroupView:backgroupView];
 }
 
 

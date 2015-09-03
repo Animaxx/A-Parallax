@@ -9,16 +9,75 @@
 #import "A_ParallaxManager.h"
 #import <CoreMotion/CoreMotion.h>
 
+#define A_Parallax_updateInterval 0.1f
+#define A_Parallax_yAxleOffset 0.15f
+#define A_Parallax_updateInterval 0.1f
+#define A_Parallax_animationSetpsNumber 6
+
 #pragma mark - Parallax View Model
 @interface A_ParallaxViewModel : NSObject
 
 @property (nonatomic) CGFloat depth;
 @property (weak, nonatomic) UIView *view;
-@property (nonatomic) CGPoint centerPoint;
+@property (nonatomic) CGPoint originalCenterPoint;
+
+@property (nonatomic) CGPoint stepDistance;
+@property (nonatomic) int remainSteps;
+
+@property (nonatomic) BOOL isBackgroupView;
+@property (weak, nonatomic) A_ParallaxManager *parallaxManager;
 
 @end
 
 @implementation A_ParallaxViewModel
+
+
+- (instancetype)initWithView:(UIView *)view andDepth:(CGFloat)depth manager:(A_ParallaxManager *)manager {
+    self = [super init];
+    if (self) {
+        self.view = view;
+        self.originalCenterPoint = view.center;
+        
+        if (depth < 0.0f) {
+            self.depth = 0.0f;
+        } else if (depth > 1.0f) {
+            self.depth = 1.0f;
+        } else {
+            self.depth = depth;
+        }
+        
+        self.parallaxManager = manager;
+    }
+    return self;
+}
+
+- (void)locateToNextPoint {
+    if (self.view) {
+        
+    }
+}
+- (CGPoint)nextPoint:(CMDeviceMotion *)data {
+    if (_remainSteps > 0){
+        _remainSteps--;
+    } else {
+        CGPoint _destinationPoint = [self calculateDestinationPoint:data];
+        _stepDistance = CGPointMake((_destinationPoint.x-_view.center.x) / A_Parallax_animationSetpsNumber,
+                                        (_destinationPoint.y-_view.center.y) / A_Parallax_animationSetpsNumber);
+        
+        _remainSteps = A_Parallax_animationSetpsNumber;
+    }
+    
+    return CGPointMake(_view.center.x - _stepDistance.x, _view.center.y - _stepDistance.y);
+}
+- (CGPoint)calculateDestinationPoint:(CMDeviceMotion *)data {
+    if (self.isBackgroupView) {
+        return CGPointMake(_originalCenterPoint.x + ((_originalCenterPoint.x * data.gravity.x * A_Parallax_displacementRange)),
+                           _originalCenterPoint.y + ((_originalCenterPoint.y * data.gravity.y * A_Parallax_displacementRange)) + (_originalCenterPoint.y * A_Parallax_yAxleOffset));
+    } else {
+        return CGPointMake(_originalCenterPoint.x + ((_originalCenterPoint.x * data.gravity.x * A_Parallax_displacementRange) * self.depth),
+                           _originalCenterPoint.y + ((_originalCenterPoint.y * data.gravity.y * A_Parallax_displacementRange) * self.depth));
+    }
+}
 
 @end
 
@@ -92,41 +151,37 @@
 }
 - (void)displayLinkHandler {
     NSLog(@"x:%f y:%f z:%f", _motionManager.deviceMotion.gravity.x, _motionManager.deviceMotion.gravity.y, _motionManager.deviceMotion.gravity.z);
+    
+    CMDeviceMotion *motion = _motionManager.deviceMotion;
+    for (A_ParallaxViewModel *model in _subviewModels) {
+        
+    }
 }
 
-- (void)A_AddView:(UIView*)view depth:(CGFloat)depth {
+- (void)A_StoreBackgroupView:(UIView*)view {
+    // TODO:
+}
+- (void)A_StoreView:(UIView*)view depth:(CGFloat)depth {
     _originalPoint = view.center;
     
-    A_ParallaxViewModel *model = [self storeModel:view];
-    if (depth < 0.0f) {
-        model.depth = 0.0f;
-    } else if (depth > 1.0f) {
-        model.depth = 1.0f;
+    A_ParallaxViewModel *model = nil;
+    for (A_ParallaxViewModel *item in _subviewModels) {
+        if (item.view == view) {
+            model = item;
+        }
+    }
+    
+    if (!model) {
+        model = [[A_ParallaxViewModel alloc] initWithView:view andDepth:depth manager:self];
+        [_subviewModels addObject:model];
     } else {
         model.depth = depth;
     }
 }
 
 
-- (A_ParallaxViewModel *)storeModel:(UIView *)view {
-    for (A_ParallaxViewModel *model in _subviewModels) {
-        if (model.view == view) {
-            return model;
-        }
-    }
-    
-    A_ParallaxViewModel *model = [[A_ParallaxViewModel alloc] init];
-    model.view = view;
-    [_subviewModels addObject:model];
-    return model;
-}
-
 #pragma mark - Helping methods
-- (CGPoint)calculatePoint:(A_ParallaxViewModel *)viewModel accleration:(CMDeviceMotion *)data {
-    CGPoint newPoint = CGPointMake(_originalPoint.x + ((_originalPoint.x * data.gravity.x * A_Parallax_displacementRange) * viewModel.depth),
-                                   _originalPoint.y + ((_originalPoint.y * data.gravity.y * A_Parallax_displacementRange) * viewModel.depth));
-    return newPoint;
-}
+
 
 - (CGFloat)degreesToRadians:(CGFloat) degrees {
     return degrees * M_PI / 180;

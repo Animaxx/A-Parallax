@@ -25,18 +25,17 @@
 @property (nonatomic) int remainSteps;
 
 @property (nonatomic) BOOL isBackgroupView;
-@property (weak, nonatomic) A_ParallaxManager *parallaxManager;
 
 @end
 
 @implementation A_ParallaxViewModel
 
-
-- (instancetype)initWithView:(UIView *)view andDepth:(CGFloat)depth manager:(A_ParallaxManager *)manager {
+- (instancetype)initWithView:(UIView *)view andDepth:(CGFloat)depth {
     self = [super init];
     if (self) {
         self.view = view;
         self.originalCenterPoint = view.center;
+        self.isBackgroupView = NO;
         
         if (depth < 0.0f) {
             self.depth = 0.0f;
@@ -46,28 +45,34 @@
             self.depth = depth;
         }
         
-        self.parallaxManager = manager;
     }
     return self;
 }
 
-- (void)locateToNextPoint {
-    if (self.view) {
-        
+- (void)locateToNextPoint:(CMDeviceMotion *)data {
+    if (self.view && data) {
+        CGPoint newPoint = [self nextPoint:data];
+        [self.view setCenter:newPoint];
     }
 }
 - (CGPoint)nextPoint:(CMDeviceMotion *)data {
+    CGPoint _currentViewCenter = _view.center;
+    
     if (_remainSteps > 0){
         _remainSteps--;
     } else {
         CGPoint _destinationPoint = [self calculateDestinationPoint:data];
-        _stepDistance = CGPointMake((_destinationPoint.x-_view.center.x) / A_Parallax_animationSetpsNumber,
-                                        (_destinationPoint.y-_view.center.y) / A_Parallax_animationSetpsNumber);
+        _stepDistance = CGPointMake((_destinationPoint.x-_currentViewCenter.x) / A_Parallax_animationSetpsNumber,
+                                        (_destinationPoint.y-_currentViewCenter.y) / A_Parallax_animationSetpsNumber);
+        
+//        NSLog(@"destination x:%f y:%f", _destinationPoint.x, _destinationPoint.y);
+        NSLog(@"step distance x:%f y:%f", _stepDistance.x, _stepDistance.y);
         
         _remainSteps = A_Parallax_animationSetpsNumber;
     }
     
-    return CGPointMake(_view.center.x - _stepDistance.x, _view.center.y - _stepDistance.y);
+    CGPoint newCenter = CGPointMake(_currentViewCenter.x + _stepDistance.x, _currentViewCenter.y + _stepDistance.y);
+    return newCenter;
 }
 - (CGPoint)calculateDestinationPoint:(CMDeviceMotion *)data {
     if (self.isBackgroupView) {
@@ -87,8 +92,6 @@
     CMMotionManager *_motionManager;
     NSMutableArray *_subviewModels;
     
-    // TODO: DELETE
-    CGPoint _originalPoint;
     CADisplayLink *_displayLink;
 }
 
@@ -150,20 +153,15 @@
     return self;
 }
 - (void)displayLinkHandler {
-    NSLog(@"x:%f y:%f z:%f", _motionManager.deviceMotion.gravity.x, _motionManager.deviceMotion.gravity.y, _motionManager.deviceMotion.gravity.z);
-    
     CMDeviceMotion *motion = _motionManager.deviceMotion;
-    for (A_ParallaxViewModel *model in _subviewModels) {
-        
+    if (motion) {
+        for (A_ParallaxViewModel *model in _subviewModels) {
+            [model locateToNextPoint:motion];
+        }
     }
 }
 
 - (void)A_StoreBackgroupView:(UIView*)view {
-    // TODO:
-}
-- (void)A_StoreView:(UIView*)view depth:(CGFloat)depth {
-    _originalPoint = view.center;
-    
     A_ParallaxViewModel *model = nil;
     for (A_ParallaxViewModel *item in _subviewModels) {
         if (item.view == view) {
@@ -172,17 +170,30 @@
     }
     
     if (!model) {
-        model = [[A_ParallaxViewModel alloc] initWithView:view andDepth:depth manager:self];
+        model = [[A_ParallaxViewModel alloc] initWithView:view andDepth:1.0f];
+        [_subviewModels addObject:model];
+    }
+    
+    model.depth = 1.0f;
+    model.isBackgroupView = YES;
+}
+- (void)A_StoreView:(UIView*)view depth:(CGFloat)depth {
+    A_ParallaxViewModel *model = nil;
+    for (A_ParallaxViewModel *item in _subviewModels) {
+        if (item.view == view) {
+            model = item;
+        }
+    }
+    
+    if (!model) {
+        model = [[A_ParallaxViewModel alloc] initWithView:view andDepth:depth];
         [_subviewModels addObject:model];
     } else {
         model.depth = depth;
     }
 }
 
-
 #pragma mark - Helping methods
-
-
 - (CGFloat)degreesToRadians:(CGFloat) degrees {
     return degrees * M_PI / 180;
 };

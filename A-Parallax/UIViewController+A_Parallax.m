@@ -16,7 +16,7 @@
 
 @implementation UIViewController (A_Parallax)
 
-- (void)A_SetBackgroupImage: (UIImage *)image {
+- (void)A_ParallaxBackgroup: (UIImage *)image {
     CGSize controllerSize = self.view.bounds.size;
     controllerSize.height = controllerSize.height * (1 + A_Parallax_displacementRange * 2);
     controllerSize.width = controllerSize.width * (1 + A_Parallax_displacementRange * 2);
@@ -32,6 +32,7 @@
     [self.view insertSubview:backgroupView atIndex:0];
     [[A_ParallaxManager shareInstance] A_StoreBackgroupView:backgroupView];
 }
-
+- (void)A_DeleteParallaxBackgroup {
+}
 
 @end

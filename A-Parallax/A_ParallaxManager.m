@@ -14,6 +14,9 @@
 #define A_Parallax_updateInterval 0.1f
 #define A_Parallax_animationSetpsNumber 6
 
+#define A_Parallax_shadowOffset (20.0f * -1)
+#define A_Parallax_shadowOffset_yAxleExtra 10.0f
+
 #pragma mark - Parallax View Model
 @interface A_ParallaxViewModel : NSObject
 
@@ -25,11 +28,25 @@
 @property (nonatomic) int remainSteps;
 
 @property (nonatomic) BOOL isBackgroupView;
+@property (nonatomic) BOOL enableShadow;
 
 @end
 
 @implementation A_ParallaxViewModel
 
+- (instancetype)initWithView:(UIView *)view andShadow:(BOOL)enable {
+    self = [super init];
+    if (self) {
+        self.view = view;
+        self.originalCenterPoint = view.center;
+        self.isBackgroupView = NO;
+        self.enableShadow = enable;
+        if (self.depth == 0.0f) {
+            self.depth = 1.0f;
+        }
+    }
+    return self;
+}
 - (instancetype)initWithView:(UIView *)view andDepth:(CGFloat)depth {
     self = [super init];
     if (self) {
@@ -53,6 +70,12 @@
     if (self.view && data) {
         CGPoint newPoint = [self nextPoint:data];
         [self.view setCenter:newPoint];
+        
+        self.view.layer.shadowColor = [UIColor blackColor].CGColor;
+        self.view.layer.masksToBounds = NO;
+        self.view.layer.shadowOffset = CGSizeMake(data.gravity.x * A_Parallax_shadowOffset, data.gravity.y * A_Parallax_shadowOffset + A_Parallax_shadowOffset_yAxleExtra);
+        self.view.layer.shadowRadius = 10.0f;
+        self.view.layer.shadowOpacity = 0.6f;
     }
 }
 - (CGPoint)nextPoint:(CMDeviceMotion *)data {
@@ -65,7 +88,6 @@
         _stepDistance = CGPointMake((_destinationPoint.x-_currentViewCenter.x) / A_Parallax_animationSetpsNumber,
                                         (_destinationPoint.y-_currentViewCenter.y) / A_Parallax_animationSetpsNumber);
         
-//        NSLog(@"destination x:%f y:%f", _destinationPoint.x, _destinationPoint.y);
         NSLog(@"step distance x:%f y:%f", _stepDistance.x, _stepDistance.y);
         
         _remainSteps = A_Parallax_animationSetpsNumber;
@@ -76,8 +98,8 @@
 }
 - (CGPoint)calculateDestinationPoint:(CMDeviceMotion *)data {
     if (self.isBackgroupView) {
-        return CGPointMake(_originalCenterPoint.x + ((_originalCenterPoint.x * data.gravity.x * A_Parallax_displacementRange)),
-                           _originalCenterPoint.y + ((_originalCenterPoint.y * data.gravity.y * A_Parallax_displacementRange)) + (_originalCenterPoint.y * A_Parallax_yAxleOffset));
+        return CGPointMake(_originalCenterPoint.x + (_originalCenterPoint.x * data.gravity.x * A_Parallax_displacementRange) * -1,
+                           _originalCenterPoint.y + (_originalCenterPoint.y * data.gravity.y * A_Parallax_displacementRange) * -1 + (_originalCenterPoint.y * A_Parallax_yAxleOffset));
     } else {
         return CGPointMake(_originalCenterPoint.x + ((_originalCenterPoint.x * data.gravity.x * A_Parallax_displacementRange) * self.depth),
                            _originalCenterPoint.y + ((_originalCenterPoint.y * data.gravity.y * A_Parallax_displacementRange) * self.depth));
@@ -127,26 +149,6 @@
             _displayLink.frameInterval = 1;
             
             [_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-            
-//            [_motionManager startDeviceMotionUpdatesToQueue:[NSOperationQueue mainQueue] withHandler:^(CMDeviceMotion *data, NSError *error) {
-//                
-//                if (_subviewModels.count <= 0) return;
-//                
-//                
-//                NSLog(@"x:%f y:%f z:%f", data.gravity.x, data.gravity.y, data.gravity.z);
-            // TODO: Backgroup needs add "A_Parallax_yAxleOffset"
-//                CGPoint newPoint = CGPointMake(_originalPoint.x + (_originalPoint.x * data.gravity.x * A_Parallax_displacementRange) ,
-//                                               _originalPoint.y + _originalPoint.y * A_Parallax_yAxleOffset + (_originalPoint.y * data.gravity.y * A_Parallax_displacementRange)  );
-//                
-//                NSLog(@"new x:%f new y:%f", newPoint.x, newPoint.y);
-//                
-//                //TODO: update to use display link
-//                [UIView animateWithDuration:A_Parallax_updateInterval animations:^{
-//                    [((A_ParallaxViewModel*)_subviewModels[0]).view setCenter:newPoint];
-//                } completion:^(BOOL finished) {
-//                    
-//                }];
-//            }];
         }
         
     }
@@ -177,6 +179,24 @@
     model.depth = 1.0f;
     model.isBackgroupView = YES;
 }
+- (void)A_StoreView:(UIView*)view depth:(CGFloat)depth andShadow:(BOOL)enable {
+    A_ParallaxViewModel *model = nil;
+    for (A_ParallaxViewModel *item in _subviewModels) {
+        if (item.view == view) {
+            model = item;
+        }
+    }
+
+    if (!model) {
+        model = [[A_ParallaxViewModel alloc] initWithView:view andDepth:depth];
+        model.enableShadow = enable;
+        [_subviewModels addObject:model];
+    } else {
+        model.depth = depth;
+        model.enableShadow = enable;
+    }
+
+}
 - (void)A_StoreView:(UIView*)view depth:(CGFloat)depth {
     A_ParallaxViewModel *model = nil;
     for (A_ParallaxViewModel *item in _subviewModels) {
@@ -190,6 +210,43 @@
         [_subviewModels addObject:model];
     } else {
         model.depth = depth;
+    }
+}
+- (void)A_StoreView:(UIView*)view shadow:(BOOL)enable {
+    A_ParallaxViewModel *model = nil;
+    for (A_ParallaxViewModel *item in _subviewModels) {
+        if (item.view == view) {
+            model = item;
+        }
+    }
+    
+    if (!model) {
+        model = [[A_ParallaxViewModel alloc] initWithView:view andShadow:enable];
+        [_subviewModels addObject:model];
+    } else {
+        model.enableShadow = enable;
+    }
+}
+
+- (BOOL)A_RemoveView:(UIView*)view {
+    for (A_ParallaxViewModel *item in _subviewModels) {
+        if (item.view == view) {
+            [_subviewModels removeObject:item];
+            return YES;
+        }
+    }
+    return NO;
+}
+- (void)A_RemoveBackgroup {
+    NSMutableArray *backgroupViews = [[NSMutableArray alloc] init];
+    for (A_ParallaxViewModel *item in _subviewModels) {
+        if (item.isBackgroupView) {
+            [backgroupViews addObject:item];
+        }
+    }
+    
+    for (A_ParallaxViewModel *item in backgroupViews) {
+        [_subviewModels removeObject:item];
     }
 }
 

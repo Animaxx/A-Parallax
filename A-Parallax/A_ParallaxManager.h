@@ -8,15 +8,17 @@
 
 #import <UIKit/UIKit.h>
 
-#define A_Parallax_displacementRange 0.5f
+#define A_Parallax_displacementRange 0.3f
 
 @interface A_ParallaxManager : NSObject
 
 + (A_ParallaxManager *)shareInstance;
 
 - (void)A_StoreBackgroupView:(UIView*)view;
-// depth is about how depth the view should be, range  [0...1]
-- (void)A_StoreView:(UIView*)view depth:(CGFloat)depth;
 
+// depth is about how depth the view should be, range shallower [0...1] deeper
+- (void)A_StoreView:(UIView*)view depth:(CGFloat)depth;
+- (void)A_StoreView:(UIView*)view shadow:(BOOL)enable;
+- (BOOL)A_RemoveView:(UIView*)view;
 
 @end

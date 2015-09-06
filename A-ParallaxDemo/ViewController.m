@@ -7,10 +7,14 @@
 //
 
 #import "ViewController.h"
+
 #import "A_ParallaxManager.h"
 #import "UIViewController+A_Parallax.h"
+#import "UIView+A_Parallax.h"
 
 @interface ViewController ()
+
+@property (weak, nonatomic) IBOutlet UIView *demoBox1;
 
 @end
 
@@ -25,13 +29,9 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-//    UIImage *backgroupImage = [A_ParallaxManager adjustImage:[UIImage imageNamed:@"backgroup"] toSize:[UIScreen mainScreen].bounds.size];
-//    _backgroupView = [[UIImageView alloc] initWithImage:backgroupImage];
-//    
-//    [self.view insertSubview:_backgroupView atIndex:0];
-//    [[A_ParallaxManager shareInstance] A_AddView:_backgroupView distance:1.0f];
     
-    [self A_SetBackgroupImage:[UIImage imageNamed:@"backgroup"]];
+    [self A_ParallaxBackgroup:[UIImage imageNamed:@"backgroup"]];
+    [_demoBox1 A_SetParallaxShadow:YES];
 }
 
 @end

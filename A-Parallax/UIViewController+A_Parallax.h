@@ -10,6 +10,6 @@
 
 @interface UIViewController (A_Parallax)
 
-- (void)A_SetBackgroupImage: (UIImage *)image;
+- (void)A_ParallaxBackgroup: (UIImage *)image;
 
 @end

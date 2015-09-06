@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8173.3" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8142"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
@@ -17,20 +18,23 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3ef-Bd-zYp">
-                                <rect key="frame" x="10" y="50" width="30" height="30"/>
-                                <color key="backgroundColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <rect key="frame" x="250" y="80" width="100" height="100"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="30" id="wLH-cp-B6t"/>
-                                    <constraint firstAttribute="width" constant="30" id="yoW-Nv-wIy"/>
+                                    <constraint firstAttribute="height" constant="100" id="wLH-cp-B6t"/>
+                                    <constraint firstAttribute="width" constant="100" id="yoW-Nv-wIy"/>
                                 </constraints>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="3ef-Bd-zYp" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="30" id="hDB-m3-ZCz"/>
-                            <constraint firstItem="3ef-Bd-zYp" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="10" id="zdE-rw-lqt"/>
+                            <constraint firstItem="3ef-Bd-zYp" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Sop-ih-DyK"/>
+                            <constraint firstItem="3ef-Bd-zYp" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="60" id="hDB-m3-ZCz"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="demoBox1" destination="3ef-Bd-zYp" id="niv-u2-0A4"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>

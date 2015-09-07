@@ -18,7 +18,7 @@ static char _parallaxBackgroupViewKey;
     UIImageView *backgroupView = objc_getAssociatedObject(self, &_parallaxBackgroupViewKey);
     if (backgroupView) {
         [backgroupView removeFromSuperview];
-        [[A_ParallaxManager shareInstance] A_RemoveView:backgroupView];
+        [[A_ParallaxManager shareInstance] removeView:backgroupView];
     }
     
     backgroupView = [[UIImageView alloc] initWithImage:image];
@@ -31,14 +31,20 @@ static char _parallaxBackgroupViewKey;
     [backgroupView setContentMode:UIViewContentModeScaleAspectFill];
     
     [self.view insertSubview:backgroupView atIndex:0];
-    [[A_ParallaxManager shareInstance] A_StoreBackgroupView:backgroupView];
+    [UIView animateWithDuration:0.3 animations:^{
+        
+    } completion:^(BOOL finished) {
+        
+    }];
+    
+    [[A_ParallaxManager shareInstance] storeBackgroupView:backgroupView];
     
     objc_setAssociatedObject(self, &_parallaxBackgroupViewKey, backgroupView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 - (void)A_DeleteParallaxBackgroup {
     UIView *backgroupView = objc_getAssociatedObject(self, &_parallaxBackgroupViewKey);
     if (backgroupView) {
-        [[A_ParallaxManager shareInstance] A_RemoveView:backgroupView];
+        [[A_ParallaxManager shareInstance] removeView:backgroupView];
     }
 }
 

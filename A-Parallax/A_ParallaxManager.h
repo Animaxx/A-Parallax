@@ -12,15 +12,26 @@
 
 @interface A_ParallaxManager : NSObject
 
+// the maximum offset of shadow, default: 20.0f
+@property (nonatomic) CGFloat shadowDynamicOffset;
+// the fixed offset of shadow, default: (0, 10)
+@property (nonatomic) CGPoint shadowFixedOffset;
+// the shadow radius, default: 0.6f
+@property (nonatomic) CGFloat shadowRadius;
+// the shadow opacity, default: 0.8f
+@property (nonatomic) CGFloat shadowOpacity;
+// the shadow color, default: blackColor
+@property (nonatomic) UIColor *shadowColor;
+
 + (A_ParallaxManager *)shareInstance;
 
-- (void)A_StoreBackgroupView:(UIView*)view;
+- (void)storeBackgroupView:(UIView*)view;
 
 // depth is about how depth the view should be, range shallower [0...1] deeper
-- (void)A_StoreView:(UIView*)view depth:(CGFloat)depth andShadow:(BOOL)enable;
-- (void)A_StoreView:(UIView*)view depth:(CGFloat)depth;
-- (void)A_StoreView:(UIView*)view shadow:(BOOL)enable;
+- (void)storeView:(UIView*)view depth:(CGFloat)depth andShadow:(BOOL)enable;
+- (void)storeView:(UIView*)view depth:(CGFloat)depth;
+- (void)storeView:(UIView*)view shadow:(BOOL)enable;
 
-- (BOOL)A_RemoveView:(UIView*)view;
+- (BOOL)removeView:(UIView*)view;
 
 @end

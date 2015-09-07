@@ -17,26 +17,46 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3ef-Bd-zYp">
-                                <rect key="frame" x="250" y="140" width="100" height="100"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="100" id="wLH-cp-B6t"/>
-                                    <constraint firstAttribute="width" constant="100" id="yoW-Nv-wIy"/>
-                                </constraints>
-                            </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No shadow demo" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Qrl-h9-MH5">
                                 <rect key="frame" x="230" y="99" width="141" height="20.5"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                 <color key="textColor" red="0.84694602272727271" green="0.84694602272727271" blue="0.84694602272727271" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="backgroup" translatesAutoresizingMaskIntoConstraints="NO" id="RPB-j3-Rb8">
-                                <rect key="frame" x="0.0" y="20" width="600" height="580"/>
-                                <variation key="widthClass=compact" fixedFrame="YES">
-                                    <rect key="frame" x="0.0" y="20" width="400" height="580"/>
-                                </variation>
-                            </imageView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3ef-Bd-zYp">
+                                <rect key="frame" x="250" y="140" width="100" height="100"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4Yx-lL-gGO">
+                                        <rect key="frame" x="35" y="35" width="30" height="30"/>
+                                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="30" id="5rC-R8-BP7"/>
+                                            <constraint firstAttribute="height" constant="30" id="ZOq-jO-E3N"/>
+                                            <constraint firstAttribute="width" constant="30" id="gjP-X1-Dup"/>
+                                            <constraint firstAttribute="height" constant="30" id="qaO-cO-jRM"/>
+                                        </constraints>
+                                        <variation key="default">
+                                            <mask key="constraints">
+                                                <exclude reference="5rC-R8-BP7"/>
+                                                <exclude reference="qaO-cO-jRM"/>
+                                            </mask>
+                                        </variation>
+                                        <variation key="widthClass=compact">
+                                            <mask key="constraints">
+                                                <include reference="5rC-R8-BP7"/>
+                                                <include reference="qaO-cO-jRM"/>
+                                            </mask>
+                                        </variation>
+                                    </view>
+                                </subviews>
+                                <color key="backgroundColor" red="0.84694602269999997" green="0.84694602269999997" blue="0.84694602269999997" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstItem="4Yx-lL-gGO" firstAttribute="centerY" secondItem="3ef-Bd-zYp" secondAttribute="centerY" id="KDk-LD-xhP"/>
+                                    <constraint firstItem="4Yx-lL-gGO" firstAttribute="centerX" secondItem="3ef-Bd-zYp" secondAttribute="centerX" id="QR7-IP-BCY"/>
+                                    <constraint firstAttribute="height" constant="100" id="wLH-cp-B6t"/>
+                                    <constraint firstAttribute="width" constant="100" id="yoW-Nv-wIy"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
@@ -56,7 +76,4 @@
             <point key="canvasLocation" x="81" y="203"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="backgroup" width="3200" height="2000"/>
-    </resources>
 </document>

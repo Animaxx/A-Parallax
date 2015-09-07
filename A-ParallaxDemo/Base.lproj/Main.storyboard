@@ -31,6 +31,12 @@
                                 <color key="textColor" red="0.84694602272727271" green="0.84694602272727271" blue="0.84694602272727271" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="backgroup" translatesAutoresizingMaskIntoConstraints="NO" id="RPB-j3-Rb8">
+                                <rect key="frame" x="0.0" y="20" width="600" height="580"/>
+                                <variation key="widthClass=compact" fixedFrame="YES">
+                                    <rect key="frame" x="0.0" y="20" width="400" height="580"/>
+                                </variation>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
@@ -47,7 +53,10 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="82" y="203"/>
+            <point key="canvasLocation" x="81" y="203"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="backgroup" width="3200" height="2000"/>
+    </resources>
 </document>

@@ -41,8 +41,8 @@
         self.originalCenterPoint = view.center;
         self.isBackgroupView = NO;
         self.enableShadow = enable;
-        if (self.depth == 0.0f) {
-            self.depth = 1.0f;
+        if (self.depth == .0f) {
+            self.depth = .5f;
         }
     }
     return self;
@@ -52,7 +52,7 @@
     if (self) {
         self.view = view;
         self.originalCenterPoint = view.center;
-        self.isBackgroupView = NO;
+        self.isBackgroupView = YES;
         
         if (depth < 0.0f) {
             self.depth = 0.0f;
@@ -71,11 +71,13 @@
         CGPoint newPoint = [self nextPoint:data];
         [self.view setCenter:newPoint];
         
-        self.view.layer.shadowColor = [UIColor blackColor].CGColor;
-        self.view.layer.masksToBounds = NO;
-        self.view.layer.shadowOffset = CGSizeMake(data.gravity.x * A_Parallax_shadowOffset, data.gravity.y * A_Parallax_shadowOffset + A_Parallax_shadowOffset_yAxleExtra);
-        self.view.layer.shadowRadius = 10.0f;
-        self.view.layer.shadowOpacity = 0.6f;
+        if (self.enableShadow) {
+            self.view.layer.shadowColor = [UIColor blackColor].CGColor;
+            self.view.layer.masksToBounds = NO;
+            self.view.layer.shadowOffset = CGSizeMake(data.gravity.x * A_Parallax_shadowOffset * self.depth, data.gravity.y * A_Parallax_shadowOffset * self.depth + (A_Parallax_shadowOffset_yAxleExtra * self.depth));
+            self.view.layer.shadowRadius = 6.0f;
+            self.view.layer.shadowOpacity = 0.6f;
+        }
     }
 }
 - (CGPoint)nextPoint:(CMDeviceMotion *)data {
@@ -99,7 +101,7 @@
 - (CGPoint)calculateDestinationPoint:(CMDeviceMotion *)data {
     if (self.isBackgroupView) {
         return CGPointMake(_originalCenterPoint.x + (_originalCenterPoint.x * data.gravity.x * A_Parallax_displacementRange) * -1,
-                           _originalCenterPoint.y + (_originalCenterPoint.y * data.gravity.y * A_Parallax_displacementRange) * -1 + (_originalCenterPoint.y * A_Parallax_yAxleOffset));
+                           _originalCenterPoint.y + (_originalCenterPoint.y * data.gravity.y * A_Parallax_displacementRange) + (_originalCenterPoint.y * A_Parallax_yAxleOffset));
     } else {
         return CGPointMake(_originalCenterPoint.x + ((_originalCenterPoint.x * data.gravity.x * A_Parallax_displacementRange) * self.depth),
                            _originalCenterPoint.y + ((_originalCenterPoint.y * data.gravity.y * A_Parallax_displacementRange) * self.depth));
@@ -113,6 +115,7 @@
 @implementation A_ParallaxManager {
     CMMotionManager *_motionManager;
     NSMutableArray *_subviewModels;
+    NSMutableArray *_emptyViewModels;
     
     CADisplayLink *_displayLink;
 }
@@ -138,8 +141,8 @@
     self = [super init];
     if (self) {
         _subviewModels = [[NSMutableArray alloc] init];
+        _emptyViewModels = [[NSMutableArray alloc] init];
         _motionManager = [[CMMotionManager alloc] init];
-        
         
         if (_motionManager.deviceMotionAvailable) {
             _motionManager.deviceMotionUpdateInterval = A_Parallax_updateInterval;
@@ -166,32 +169,22 @@
 }
 
 - (void)A_StoreBackgroupView:(UIView*)view {
-    A_ParallaxViewModel *model = nil;
     @synchronized(self) {
-        for (A_ParallaxViewModel *item in _subviewModels) {
-            if (item.view == view) {
-                model = item;
-            }
-        }
+        A_ParallaxViewModel *model = [self getParallaxModel:view];
         
         if (!model) {
             model = [[A_ParallaxViewModel alloc] initWithView:view andDepth:1.0f];
             [_subviewModels addObject:model];
         }
+        
+        model.depth = 1.0f;
+        model.isBackgroupView = YES;
     }
-    
-    model.depth = 1.0f;
-    model.isBackgroupView = YES;
 }
 - (void)A_StoreView:(UIView*)view depth:(CGFloat)depth andShadow:(BOOL)enable {
-    A_ParallaxViewModel *model = nil;
     @synchronized(self) {
-        for (A_ParallaxViewModel *item in _subviewModels) {
-            if (item.view == view) {
-                model = item;
-            }
-        }
-
+        A_ParallaxViewModel *model = [self getParallaxModel:view];
+        
         if (!model) {
             model = [[A_ParallaxViewModel alloc] initWithView:view andDepth:depth];
             model.enableShadow = enable;
@@ -203,13 +196,8 @@
     }
 }
 - (void)A_StoreView:(UIView*)view depth:(CGFloat)depth {
-    A_ParallaxViewModel *model = nil;
     @synchronized(self) {
-        for (A_ParallaxViewModel *item in _subviewModels) {
-            if (item.view == view) {
-                model = item;
-            }
-        }
+        A_ParallaxViewModel *model = [self getParallaxModel:view];
         
         if (!model) {
             model = [[A_ParallaxViewModel alloc] initWithView:view andDepth:depth];
@@ -220,13 +208,8 @@
     }
 }
 - (void)A_StoreView:(UIView*)view shadow:(BOOL)enable {
-    A_ParallaxViewModel *model = nil;
     @synchronized(self) {
-        for (A_ParallaxViewModel *item in _subviewModels) {
-            if (item.view == view) {
-                model = item;
-            }
-        }
+        A_ParallaxViewModel *model = [self getParallaxModel:view];
         
         if (!model) {
             model = [[A_ParallaxViewModel alloc] initWithView:view andShadow:enable];
@@ -235,6 +218,23 @@
             model.enableShadow = enable;
         }
     }
+}
+
+- (A_ParallaxViewModel *)getParallaxModel:(UIView *)view {
+    A_ParallaxViewModel *model = nil;
+    for (A_ParallaxViewModel *item in _subviewModels) {
+        if (!item.view) {
+            [_emptyViewModels addObject:item];
+        } else if (item.view == view) {
+            model = item;
+        }
+    }
+    
+    for (A_ParallaxViewModel *item in _emptyViewModels) {
+        [_subviewModels removeObject:item];
+    }
+    
+    return model;
 }
 
 - (BOOL)A_RemoveView:(UIView*)view {

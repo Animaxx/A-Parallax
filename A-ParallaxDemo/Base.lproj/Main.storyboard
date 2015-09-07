@@ -18,26 +18,36 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3ef-Bd-zYp">
-                                <rect key="frame" x="250" y="80" width="100" height="100"/>
+                                <rect key="frame" x="250" y="140" width="100" height="100"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="100" id="wLH-cp-B6t"/>
                                     <constraint firstAttribute="width" constant="100" id="yoW-Nv-wIy"/>
                                 </constraints>
                             </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No shadow demo" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Qrl-h9-MH5">
+                                <rect key="frame" x="230" y="99" width="141" height="20.5"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                <color key="textColor" red="0.84694602272727271" green="0.84694602272727271" blue="0.84694602272727271" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="3ef-Bd-zYp" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Sop-ih-DyK"/>
-                            <constraint firstItem="3ef-Bd-zYp" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="60" id="hDB-m3-ZCz"/>
+                            <constraint firstItem="3ef-Bd-zYp" firstAttribute="top" secondItem="Qrl-h9-MH5" secondAttribute="bottom" constant="20.5" id="ePb-aR-Df1"/>
+                            <constraint firstItem="3ef-Bd-zYp" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="120" id="hDB-m3-ZCz"/>
+                            <constraint firstItem="Qrl-h9-MH5" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="wPM-Xd-ujz"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="demoBox1" destination="3ef-Bd-zYp" id="niv-u2-0A4"/>
+                        <outlet property="noShadowLabel" destination="Qrl-h9-MH5" id="ZfI-Df-yqW"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="82" y="203"/>
         </scene>
     </scenes>
 </document>

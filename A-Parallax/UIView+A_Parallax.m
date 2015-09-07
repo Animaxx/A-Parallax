@@ -11,6 +11,9 @@
 
 @implementation UIView (A_Parallax)
 
+- (void)A_SetParallax {
+    [[A_ParallaxManager shareInstance] A_StoreView:self shadow:YES];
+}
 - (void)A_SetParallaxDepth: (CGFloat)depth {
     [[A_ParallaxManager shareInstance] A_StoreView:self depth:depth];
 }
@@ -18,9 +21,8 @@
     [[A_ParallaxManager shareInstance] A_StoreView:self shadow:enable];
 }
 - (void)A_SetParallaxDepth: (CGFloat)depth andShadow: (BOOL)enable {
-    [[A_ParallaxManager shareInstance] A_StoreView:self shadow:enable];
+    [[A_ParallaxManager shareInstance] A_StoreView:self depth:depth andShadow:enable];
 }
-
 
 - (void)A_DeleteParallax {
     [[A_ParallaxManager shareInstance] A_RemoveView:self];

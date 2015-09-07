@@ -76,8 +76,6 @@
         _stepDistance = CGPointMake((destinationPoint.x-currentViewCenter.x) / A_Parallax_animationSetpsNumber,
                                         (destinationPoint.y-currentViewCenter.y) / A_Parallax_animationSetpsNumber);
 
-        NSLog(@"step distance x:%f y:%f", _stepDistance.x, _stepDistance.y);
-
         _remainSteps = A_Parallax_animationSetpsNumber;
     }
 
@@ -91,19 +89,25 @@
     if (self.enableShadow) {
         self.view.layer.shadowColor = manager.shadowColor.CGColor;
         self.view.layer.masksToBounds = NO;
-        self.view.layer.shadowOffset = CGSizeMake(motion.gravity.x * manager.shadowDynamicOffset * self.depth * -1 + (manager.shadowFixedOffset.x * self.depth), motion.gravity.y * manager.shadowDynamicOffset * self.depth * -1 + (manager.shadowFixedOffset.y * self.depth));
+        CGSize shadowOffset = CGSizeMake(motion.gravity.x * manager.shadowDynamicOffset * self.depth + (manager.shadowFixedOffset.x * self.depth),
+                                         motion.gravity.y * manager.shadowDynamicOffset * self.depth * -1 + (manager.shadowFixedOffset.y * self.depth));
+        self.view.layer.shadowOffset = shadowOffset;
         self.view.layer.shadowRadius = manager.shadowRadius;
         self.view.layer.shadowOpacity = manager.shadowOpacity;
+    } else {
+        self.view.layer.shadowOpacity = 0.0f;
     }
 }
 
 - (CGPoint)calculateDestinationPoint:(CMDeviceMotion *)data {
+    CGSize viewSize = self.view.frame.size;
+    
     if (self.isBackgroupView) {
         return CGPointMake(_originalCenterPoint.x + (_originalCenterPoint.x * data.gravity.x * A_Parallax_displacementRange) * -1,
                            _originalCenterPoint.y + (_originalCenterPoint.y * data.gravity.y * A_Parallax_displacementRange) + (_originalCenterPoint.y * A_Parallax_backgroupFixedHorizentalOffsetRate));
     } else {
-        return CGPointMake(_originalCenterPoint.x + ((_originalCenterPoint.x * data.gravity.x * A_Parallax_displacementRange) * self.depth),
-                           _originalCenterPoint.y + ((_originalCenterPoint.y * data.gravity.y * A_Parallax_displacementRange) * self.depth));
+        return CGPointMake(_originalCenterPoint.x + ((viewSize.width * data.gravity.x * A_Parallax_displacementRange) * self.depth),
+                           _originalCenterPoint.y + ((viewSize.height * data.gravity.y * A_Parallax_displacementRange) * self.depth));
     }
 }
 
@@ -145,8 +149,8 @@
         
         // set the default params
         _shadowDynamicOffset = 20.0f;
-        _shadowFixedOffset = CGPointMake(.0f, 10.0f);
-        _shadowRadius = 0.6f;
+        _shadowFixedOffset = CGPointMake(.0f, 20.0f);
+        _shadowRadius = 5.0f;
         _shadowOpacity = 0.8f;
         _shadowColor = [UIColor blackColor];
         

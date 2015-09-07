@@ -31,13 +31,29 @@ static char _parallaxBackgroupViewKey;
     [backgroupView setContentMode:UIViewContentModeScaleAspectFill];
     
     [self.view insertSubview:backgroupView atIndex:0];
-    [UIView animateWithDuration:0.3 animations:^{
-        
-    } completion:^(BOOL finished) {
-        
-    }];
     
-    [[A_ParallaxManager shareInstance] storeBackgroupView:backgroupView];
+    // displaying animation
+    CAAnimationGroup *animationGroup = [CAAnimationGroup animation];
+    [animationGroup setRemovedOnCompletion: YES];
+    animationGroup.duration = 0.3f;
+    
+    CABasicAnimation *opacityAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
+    opacityAnimation.fromValue = @(0.0f);
+    opacityAnimation.toValue = @(1.0f);
+    
+    CABasicAnimation *transformAnimation = [CABasicAnimation animationWithKeyPath:@"transform"];
+    transformAnimation.timingFunction = [[CAMediaTimingFunction alloc] initWithControlPoints:.5 :1.5 :1 :1];
+    transformAnimation.fromValue = [NSValue valueWithCATransform3D:CATransform3DMakeScale(1.6, 1.6, 1)];
+    transformAnimation.toValue = [NSValue valueWithCATransform3D:CATransform3DMakeScale(1.0, 1.0, 1)];
+    
+    animationGroup.animations = @[opacityAnimation,transformAnimation];
+    
+    [CATransaction begin]; {
+        [CATransaction setCompletionBlock:^{
+            [[A_ParallaxManager shareInstance] storeBackgroupView:backgroupView];
+        }];
+        [backgroupView.layer addAnimation:animationGroup forKey:nil];
+    } [CATransaction commit];
     
     objc_setAssociatedObject(self, &_parallaxBackgroupViewKey, backgroupView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }

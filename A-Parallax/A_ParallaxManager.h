@@ -16,7 +16,7 @@
 @property (nonatomic) CGFloat shadowDynamicOffset;
 // the fixed offset of shadow, default: (0, 10)
 @property (nonatomic) CGPoint shadowFixedOffset;
-// the shadow radius, default: 0.6f
+// the shadow radius, default: 5.0f
 @property (nonatomic) CGFloat shadowRadius;
 // the shadow opacity, default: 0.8f
 @property (nonatomic) CGFloat shadowOpacity;

@@ -19,6 +19,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6929C9631B9E3EC600141AB2 /* A_Parallax.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = A_Parallax.h; sourceTree = "<group>"; };
 		6939F41F1B8E899B00CBCC8C /* UIView+A_Parallax.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+A_Parallax.h"; sourceTree = "<group>"; };
 		6939F4201B8E899B00CBCC8C /* UIView+A_Parallax.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+A_Parallax.m"; sourceTree = "<group>"; };
 		695E92B01B86CA5C00C7D40B /* A-ParallaxDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "A-ParallaxDemo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -98,6 +99,7 @@
 				695E92DD1B86D09300C7D40B /* UIViewController+A_Parallax.m */,
 				6939F41F1B8E899B00CBCC8C /* UIView+A_Parallax.h */,
 				6939F4201B8E899B00CBCC8C /* UIView+A_Parallax.m */,
+				6929C9631B9E3EC600141AB2 /* A_Parallax.h */,
 			);
 			path = "A-Parallax";
 			sourceTree = "<group>";

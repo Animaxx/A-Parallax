@@ -157,23 +157,27 @@
 - (void)displayLinkHandler {
     CMDeviceMotion *motion = _motionManager.deviceMotion;
     if (motion) {
-        for (A_ParallaxViewModel *model in _subviewModels) {
-            [model locateToNextPoint:motion];
+        @synchronized(self) {
+            for (A_ParallaxViewModel *model in _subviewModels) {
+                [model locateToNextPoint:motion];
+            }
         }
     }
 }
 
 - (void)A_StoreBackgroupView:(UIView*)view {
     A_ParallaxViewModel *model = nil;
-    for (A_ParallaxViewModel *item in _subviewModels) {
-        if (item.view == view) {
-            model = item;
+    @synchronized(self) {
+        for (A_ParallaxViewModel *item in _subviewModels) {
+            if (item.view == view) {
+                model = item;
+            }
         }
-    }
-    
-    if (!model) {
-        model = [[A_ParallaxViewModel alloc] initWithView:view andDepth:1.0f];
-        [_subviewModels addObject:model];
+        
+        if (!model) {
+            model = [[A_ParallaxViewModel alloc] initWithView:view andDepth:1.0f];
+            [_subviewModels addObject:model];
+        }
     }
     
     model.depth = 1.0f;
@@ -181,72 +185,67 @@
 }
 - (void)A_StoreView:(UIView*)view depth:(CGFloat)depth andShadow:(BOOL)enable {
     A_ParallaxViewModel *model = nil;
-    for (A_ParallaxViewModel *item in _subviewModels) {
-        if (item.view == view) {
-            model = item;
+    @synchronized(self) {
+        for (A_ParallaxViewModel *item in _subviewModels) {
+            if (item.view == view) {
+                model = item;
+            }
+        }
+
+        if (!model) {
+            model = [[A_ParallaxViewModel alloc] initWithView:view andDepth:depth];
+            model.enableShadow = enable;
+            [_subviewModels addObject:model];
+        } else {
+            model.depth = depth;
+            model.enableShadow = enable;
         }
     }
-
-    if (!model) {
-        model = [[A_ParallaxViewModel alloc] initWithView:view andDepth:depth];
-        model.enableShadow = enable;
-        [_subviewModels addObject:model];
-    } else {
-        model.depth = depth;
-        model.enableShadow = enable;
-    }
-
 }
 - (void)A_StoreView:(UIView*)view depth:(CGFloat)depth {
     A_ParallaxViewModel *model = nil;
-    for (A_ParallaxViewModel *item in _subviewModels) {
-        if (item.view == view) {
-            model = item;
+    @synchronized(self) {
+        for (A_ParallaxViewModel *item in _subviewModels) {
+            if (item.view == view) {
+                model = item;
+            }
         }
-    }
-    
-    if (!model) {
-        model = [[A_ParallaxViewModel alloc] initWithView:view andDepth:depth];
-        [_subviewModels addObject:model];
-    } else {
-        model.depth = depth;
+        
+        if (!model) {
+            model = [[A_ParallaxViewModel alloc] initWithView:view andDepth:depth];
+            [_subviewModels addObject:model];
+        } else {
+            model.depth = depth;
+        }
     }
 }
 - (void)A_StoreView:(UIView*)view shadow:(BOOL)enable {
     A_ParallaxViewModel *model = nil;
-    for (A_ParallaxViewModel *item in _subviewModels) {
-        if (item.view == view) {
-            model = item;
+    @synchronized(self) {
+        for (A_ParallaxViewModel *item in _subviewModels) {
+            if (item.view == view) {
+                model = item;
+            }
         }
-    }
-    
-    if (!model) {
-        model = [[A_ParallaxViewModel alloc] initWithView:view andShadow:enable];
-        [_subviewModels addObject:model];
-    } else {
-        model.enableShadow = enable;
+        
+        if (!model) {
+            model = [[A_ParallaxViewModel alloc] initWithView:view andShadow:enable];
+            [_subviewModels addObject:model];
+        } else {
+            model.enableShadow = enable;
+        }
     }
 }
 
 - (BOOL)A_RemoveView:(UIView*)view {
-    for (A_ParallaxViewModel *item in _subviewModels) {
-        if (item.view == view) {
-            [_subviewModels removeObject:item];
-            return YES;
+    @synchronized(self) {
+        for (A_ParallaxViewModel *item in _subviewModels) {
+            if (item.view == view) {
+                [_subviewModels removeObject:item];
+                return YES;
+            }
         }
-    }
-    return NO;
-}
-- (void)A_RemoveBackgroup {
-    NSMutableArray *backgroupViews = [[NSMutableArray alloc] init];
-    for (A_ParallaxViewModel *item in _subviewModels) {
-        if (item.isBackgroupView) {
-            [backgroupViews addObject:item];
-        }
-    }
-    
-    for (A_ParallaxViewModel *item in backgroupViews) {
-        [_subviewModels removeObject:item];
+        return NO;
     }
 }
 

@@ -30,8 +30,8 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    [self A_ParallaxBackgroup:[UIImage imageNamed:@"backgroup"]];
-    [_demoBox1 A_SetParallaxShadow:YES];
+//    [self A_ParallaxBackgroup:[UIImage imageNamed:@"backgroup"]];
+//    [_demoBox1 A_SetParallaxShadow:YES];
 }
 
 @end

@@ -52,6 +52,10 @@
     _demoBox2.layer.cornerRadius = _demoBox2.frame.size.width/2.0f;
 }
 
+- (BOOL)prefersStatusBarHidden {
+    return YES;
+}
+
 - (IBAction)changedEnableShadow:(UISwitch *)sender {
     [_demoBox1 A_SetParallaxShadow:sender.on];
     [_demoBox2 A_SetParallaxShadow:sender.on];

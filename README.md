@@ -17,13 +17,15 @@ In your UIViewController `[self A_ParallaxBackgroup:<#UIImage instance for your 
 ```
 
 
-    Or you can set the depth and enable shadow for the parallax element:
+Or you can set the depth and enable shadow for the parallax element:
+
 ```Objective-C
 [<#Your control instance#> A_SetParallaxDepth:1.0 andShadow:YES];
 ```
 
 
-    Delete parallax effect:
+Delete parallax effect:
+
 ```Objective-C
 [<#Your control instance#> A_DeleteParallax];
 ```

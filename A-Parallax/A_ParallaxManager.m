@@ -11,7 +11,7 @@
 
 #define A_Parallax_updateInterval 0.1f
 #define A_Parallax_animationSetpsNumber 6
-#define A_Parallax_backgroupFixedHorizentalOffsetRate 0.15
+#define A_Parallax_BackgroundFixedHorizentalOffsetRate 0.15
 
 #pragma mark - Parallax View Model
 @interface A_ParallaxViewModel : NSObject
@@ -23,7 +23,7 @@
 @property (nonatomic) CGPoint stepDistance;
 @property (nonatomic) int remainSteps;
 
-@property (nonatomic) BOOL isBackgroupView;
+@property (nonatomic) BOOL isBackgroundView;
 @property (nonatomic) BOOL enableShadow;
 
 @end
@@ -35,7 +35,7 @@
     if (self) {
         self.view = view;
         self.originalCenterPoint = view.center;
-        self.isBackgroupView = NO;
+        self.isBackgroundView = NO;
         self.enableShadow = enable;
         if (self.depth == .0f) {
             self.depth = .5f;
@@ -48,7 +48,7 @@
     if (self) {
         self.view = view;
         self.originalCenterPoint = view.center;
-        self.isBackgroupView = YES;
+        self.isBackgroundView = YES;
         
         if (depth < 0.0f) {
             self.depth = 0.0f;
@@ -74,11 +74,11 @@
         // calculate new animation distination
         CGPoint destinationPoint = [self calculateDestinationPoint:motion];
         _stepDistance = CGPointMake((destinationPoint.x-currentViewCenter.x) / A_Parallax_animationSetpsNumber,
-                                        (destinationPoint.y-currentViewCenter.y) / A_Parallax_animationSetpsNumber);
-
+                                    (destinationPoint.y-currentViewCenter.y) / A_Parallax_animationSetpsNumber);
+        
         _remainSteps = A_Parallax_animationSetpsNumber;
     }
-
+    
     // move to next step position
     CGPoint newPoint = CGPointMake(currentViewCenter.x + _stepDistance.x, currentViewCenter.y + _stepDistance.y);
     
@@ -102,9 +102,9 @@
 - (CGPoint)calculateDestinationPoint:(CMDeviceMotion *)data {
     CGSize viewSize = self.view.frame.size;
     
-    if (self.isBackgroupView) {
+    if (self.isBackgroundView) {
         return CGPointMake(_originalCenterPoint.x + (_originalCenterPoint.x * data.gravity.x * A_Parallax_displacementRange) * -1,
-                           _originalCenterPoint.y + (_originalCenterPoint.y * data.gravity.y * A_Parallax_displacementRange) + (_originalCenterPoint.y * A_Parallax_backgroupFixedHorizentalOffsetRate));
+                           _originalCenterPoint.y + (_originalCenterPoint.y * data.gravity.y * A_Parallax_displacementRange) + (_originalCenterPoint.y * A_Parallax_BackgroundFixedHorizentalOffsetRate));
     } else {
         return CGPointMake(_originalCenterPoint.x + ((viewSize.width * data.gravity.x * A_Parallax_displacementRange) * self.depth),
                            _originalCenterPoint.y + ((viewSize.height * data.gravity.y * A_Parallax_displacementRange) * self.depth));
@@ -179,7 +179,7 @@
     }
 }
 
-- (void)storeBackgroupView:(UIView*)view {
+- (void)storeBackgroundView:(UIView*)view {
     @synchronized(self) {
         A_ParallaxViewModel *model = [self getParallaxModel:view];
         
@@ -189,7 +189,7 @@
         }
         
         model.depth = 1.0f;
-        model.isBackgroupView = YES;
+        model.isBackgroundView = YES;
     }
 }
 - (void)storeView:(UIView*)view depth:(CGFloat)depth andShadow:(BOOL)enable {

@@ -25,7 +25,7 @@
 
 + (A_ParallaxManager *)shareInstance;
 
-- (void)storeBackgroupView:(UIView*)view;
+- (void)storeBackgroundView:(UIView*)view;
 
 // depth is about how depth the view should be, range shallower [0...1] deeper
 - (void)storeView:(UIView*)view depth:(CGFloat)depth andShadow:(BOOL)enable;

@@ -36,7 +36,7 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    [self A_ParallaxBackgroup:[UIImage imageNamed:@"backgroup"]];
+    [self A_ParallaxBackground:[UIImage imageNamed:@"backgroup"] withEffect:A_ParallaxBackgoundDisplayEffectWithOpacity | A_ParallaxBackgoundDisplayEffectWithTransform];
     [_demoBox1 A_SetParallaxShadow:YES];
     [_demoBox2 A_SetParallaxShadow:YES];
     [_noShadowLabel A_SetParallaxShadow:YES];

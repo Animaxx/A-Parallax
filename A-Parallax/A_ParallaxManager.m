@@ -253,6 +253,7 @@
         for (A_ParallaxViewModel *item in _subviewModels) {
             if (item.view == view) {
                 [_subviewModels removeObject:item];
+                [view setCenter:item.originalCenterPoint];
                 return YES;
             }
         }

@@ -12,9 +12,9 @@
 
 @interface A_ParallaxManager : NSObject
 
-// the maximum offset of shadow, default: 20.0f
+// the maximum offset of shadow, default: 5.0f
 @property (nonatomic) CGFloat shadowDynamicOffset;
-// the fixed offset of shadow, default: (0, 10)
+// the fixed offset of shadow, default: (1, 3)
 @property (nonatomic) CGPoint shadowFixedOffset;
 // the shadow radius, default: 5.0f
 @property (nonatomic) CGFloat shadowRadius;

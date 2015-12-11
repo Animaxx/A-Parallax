@@ -19,5 +19,6 @@ typedef NS_OPTIONS(NSUInteger, A_ParallaxBackgoundDisplayEffect) {
 - (void)A_ParallaxBackground: (UIImage *)image;
 - (void)A_ParallaxBackground: (UIImage *)image withEffect:(A_ParallaxBackgoundDisplayEffect)effects;
 
+- (void)A_DeleteParallaxBackgound:(BOOL)animation;
 
 @end

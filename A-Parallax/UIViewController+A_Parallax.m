@@ -71,10 +71,21 @@ static char _parallaxBackgroupViewKey;
     }
     objc_setAssociatedObject(self, &_parallaxBackgroupViewKey, backgroupView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
-- (void)A_DeleteParallaxBackgound {
-    UIView *backgroupView = objc_getAssociatedObject(self, &_parallaxBackgroupViewKey);
+
+- (void)A_DeleteParallaxBackgound:(BOOL)animation {
+    UIImageView *backgroupView = objc_getAssociatedObject(self, &_parallaxBackgroupViewKey);
     if (backgroupView) {
-        [[A_ParallaxManager shareInstance] removeView:backgroupView];
+        if (animation) {
+            [UIView animateWithDuration:0.5f animations:^{
+                [backgroupView setAlpha:0.0f];
+            } completion:^(BOOL finished) {
+                [[A_ParallaxManager shareInstance] removeView:backgroupView];
+                [backgroupView setImage:nil];
+            }];
+        } else {
+            [[A_ParallaxManager shareInstance] removeView:backgroupView];
+            [backgroupView setImage:nil];
+        }
     }
 }
 
